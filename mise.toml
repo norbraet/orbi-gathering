@@ -1,8 +1,16 @@
 min_version = "2026.7.0"
 
+# =============================================================================
+# Tool Versions
+# =============================================================================
+
 [tools]
 flutter = "3.44.6"
 lefthook = "2.1.10"
+
+# =============================================================================
+# Project Setup
+# =============================================================================
 
 [tasks.setup]
 description = "Install Flutter dependencies and Git hooks"
@@ -15,10 +23,38 @@ run = [
 description = "Inspect the local Flutter development environment"
 run = "flutter doctor"
 
+# =============================================================================
+# Dependencies
+# =============================================================================
+
 [tasks.dependencies]
 description = "Resolve Flutter dependencies"
 alias = "deps"
 run = "flutter pub get"
+
+[tasks."pub:outdated"]
+description = "Check for outdated Dart and Flutter dependencies"
+run = "flutter pub outdated"
+
+# =============================================================================
+# Development
+# =============================================================================
+
+[tasks.dev]
+description = "Run the Flutter application in development mode"
+run = "flutter run"
+
+[tasks.devices]
+description = "List connected Flutter devices"
+run = "flutter devices"
+
+[tasks.emulators]
+description = "List available Flutter emulators"
+run = "flutter emulators"
+
+# =============================================================================
+# Code Quality
+# =============================================================================
 
 [tasks.format]
 description = "Format Dart source files"
@@ -36,6 +72,34 @@ run = "flutter analyze --fatal-infos --fatal-warnings"
 description = "Run unit and widget tests"
 run = "flutter test"
 
+[tasks."test:integration"]
+description = "Run integration tests"
+run = "flutter test integration_test"
+
+[tasks.coverage]
+description = "Run tests with coverage output"
+run = "flutter test --coverage"
+
 [tasks.check]
 description = "Run formatting, analysis, and test checks"
 depends = ["format:check", "analyze", "test"]
+
+# =============================================================================
+# Build
+# =============================================================================
+
+[tasks."build:apk"]
+description = "Build a debug Android APK"
+run = "flutter build apk --debug"
+
+[tasks."build:appbundle"]
+description = "Build an Android App Bundle"
+run = "flutter build appbundle"
+
+# =============================================================================
+# Maintenance
+# =============================================================================
+
+[tasks.clean]
+description = "Remove Flutter build artifacts"
+run = "flutter clean"

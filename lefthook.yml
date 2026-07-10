@@ -8,12 +8,7 @@ pre-commit:
       skip_empty: true
 
     forbidden-branches:
-      run: |
-        BRANCH=$(git branch --show-current)
-        if [ "$BRANCH" = "main" ] || [ "$BRANCH" = "master" ]; then
-          echo "❌ Direct commits to $BRANCH branch are forbidden!"
-          exit 1
-        fi
+      run: bash scripts/forbidden-branch.sh commit
 
     analysis:
       glob: "*.dart"
@@ -24,12 +19,7 @@ pre-commit:
 pre-push:
   commands:
     forbidden-branches:
-      run: |
-        BRANCH=$(git branch --show-current)
-        if [ "$BRANCH" = "main" ] || [ "$BRANCH" = "master" ]; then
-          echo "❌ Pushing to $BRANCH branch is forbidden!"
-          exit 1
-        fi
+      run: bash scripts/forbidden-branch.sh push
 
     analysis:
       run: mise run analyze
@@ -37,25 +27,19 @@ pre-push:
 
     test:
       run: mise run test
-      fail_text: '❌ Tests failed. Fix the failing tests and try again.'
+      fail_text: '❌ Tests failed. Fix the reported issues and try again.'
 
 post-checkout:
   commands:
     flutter-pub-get:
-      files: git diff --name-only {1} {2}
-      glob: "{pubspec.yaml,pubspec.lock}"
-      run: |
-        mise run dependencies
-        echo "⚠️  Dependencies changed; restart active Flutter tooling if necessary."
+      run: mise run dependencies
 
 post-merge:
   commands:
     flutter-pub-get:
       files: git diff --name-only ORIG_HEAD HEAD
       glob: "{pubspec.yaml,pubspec.lock}"
-      run: |
-        mise run dependencies
-        echo "⚠️  Dependencies changed; restart active Flutter tooling if necessary."
+      run: mise run dependencies
 
 skip_output:
   - meta

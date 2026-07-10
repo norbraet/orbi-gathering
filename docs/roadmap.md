@@ -6,7 +6,7 @@ The roadmap protects the central product boundary: OrbiGathering is a smart game
 
 Version 1 is account-free, offline-first, and single-device.
 
-### Product discovery and prototype
+### M1.0 — Product discovery and prototype
 
 - Play and observe several physical games, including a beginner and an experienced player.
 - Record every item tracked outside physical cards.
@@ -14,7 +14,7 @@ Version 1 is account-free, offline-first, and single-device.
 - Produce the domain glossary, screen flow, data-model draft, and clickable dashboard prototype.
 - Test whether detailed phase tracking helps or distracts and measure expected taps per turn.
 
-### Technical foundation
+### M1.1 — Technical foundation
 
 - Bootstrap Flutter for iOS and Android with strict Dart analysis and GoRouter.
 - Establish design tokens, error handling, logging, repositories, and CI.
@@ -23,7 +23,7 @@ Version 1 is account-free, offline-first, and single-device.
 
 Exit criteria: both platforms launch; database state survives restarts; card search respects current API policy; automated tests run in CI.
 
-### Deck library
+### M1.2 — Deck library
 
 - Deck list, creation/editing, duplicate, archive, and preferred printing.
 - Fast card search, local cache, plain-text import/export, and manual match resolution.
@@ -32,7 +32,7 @@ Exit criteria: both platforms launch; database state survives restarts; card sea
 
 Exit criteria: a 60-card deck can be imported and reopened offline after initial loading; ambiguous matches can be resolved manually.
 
-### Game companion MVP
+### M1.3 — Game companion MVP
 
 - Configurable game setup and presets.
 - Two-player and multiplayer life panels, generic counters, timer, and active-player tracking.
@@ -41,7 +41,7 @@ Exit criteria: a 60-card deck can be imported and reopened offline after initial
 
 Exit criteria: a full tabletop game works without a deck; closing/reopening restores it; every important action can be undone.
 
-### Reminders and effects
+### M1.4 — Reminders and effects
 
 - Triggered and manual reminder creation.
 - Active effects with deterministic and manual expiration.
@@ -50,7 +50,7 @@ Exit criteria: a full tabletop game works without a deck; closing/reopening rest
 
 Exit criteria: “until end of turn” expires correctly; upkeep reminders target the correct player; history explains state changes.
 
-### Release readiness
+### M1.5 — Release readiness
 
 - Guided and compact modes, beginner glossary, orientation support, and haptics.
 - Accessibility and high-contrast/reduced-motion review.
@@ -67,6 +67,8 @@ Exit criteria: “until end of turn” expires correctly; upkeep reminders targe
 **Could:** home-screen widgets, QR deck import, cloud backup, account synchronization, shared links, advanced validation, and custom reminder templates.
 
 ## Version 2 — synchronized nearby sessions
+
+### M2.0 — Synchronized sessions
 
 Players create or join a room using a QR or short code. Each device displays owner-specific information plus synchronized public life totals, active player, phase, shared timer, effects, and counters. Devices keep local snapshots and exchange versioned, idempotent events through a lightweight relay backend.
 
@@ -117,4 +119,3 @@ This validates the engine, event representation, Drift persistence, undo, recove
 ### Spike 2: card-to-companion flow
 
 Integrate one selected deck and create a reminder from a Scryfall card. This validates the boundary between upstream card knowledge and application-owned gameplay state.
-

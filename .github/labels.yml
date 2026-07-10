@@ -1,4 +1,4 @@
-# Canonical label taxonomy. Apply with scripts/bootstrap-github.ps1.
+# Canonical label taxonomy. Apply with scripts/bootstrap-github.sh.
 labels:
   - { name: "status: needs-triage", color: "D4C5F9", description: "Awaiting initial review and classification" }
   - { name: "status: ready", color: "0E8A16", description: "Clear, accepted, and ready to be picked up" }

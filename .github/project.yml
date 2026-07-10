@@ -8,7 +8,18 @@ fields:
   delivery_status: [Inbox, Ready, In progress, In review, Done]
   priority: [Critical, High, Medium, Low]
   effort: [XS, S, M, L, XL]
-  area: [Game engine, Decks, Cards & Scryfall, Persistence, UI & design, Accessibility, Android, iOS, DevEx & CI]
+  area:
+    [
+      Game engine,
+      Decks,
+      Cards & Scryfall,
+      Persistence,
+      UI & design,
+      Accessibility,
+      Android,
+      iOS,
+      DX & CI,
+    ]
 workflows:
   - New issues and pull requests enter Inbox.
   - Closed issues and merged pull requests move to Done.

@@ -15,6 +15,16 @@ mise install
 mise run setup
 ```
 
+The GitHub bootstrap task also requires the [GitHub CLI (`gh`)](https://cli.github.com/). Authenticate it before synchronizing labels, milestones, or project settings:
+
+```sh
+gh auth login -h github.com
+gh auth refresh -s project
+mise run github:bootstrap -- --dry-run
+```
+
+Remove `--dry-run` when you are ready to apply the changes.
+
 Common commands:
 
 ```sh
@@ -32,6 +42,11 @@ Commits follow the Conventional Commits format, for example
 title while retaining the repository pull request template as the body. For a
 branch such as `feat/123-game-setup`, it also adds `Closes #123` to link and
 close the issue when the pull request merges.
+
+Issue forms use matching title prefixes: `feat:`, `fix:`, and `chore:`. GitHub
+uses those titles when suggesting a branch from an issue. When creating a
+branch manually, use the project convention `<type>/<issue>-<description>`,
+such as `feat/123-game-setup` or `fix/124-life-total`.
 
 ## Running the application
 

@@ -1,6 +1,6 @@
 name: Bug report
 description: Report reproducible behavior that is incorrect or degraded.
-title: "[Bug]: "
+title: "fix: "
 labels: ["type: bug", "status: needs-triage"]
 body:
   - type: markdown

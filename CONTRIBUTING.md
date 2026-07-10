@@ -14,6 +14,8 @@ Issues move from `status: needs-triage` to `status: ready` only when the outcome
 ## Development workflow
 
 - Keep pull requests focused and link the issue they resolve.
+- Use the issue-form prefixes `feat:`, `fix:`, and `chore:`; GitHub uses the issue title when suggesting a development branch.
+- Prefer branch names such as `feat/123-game-setup`, `fix/124-life-total`, and `refactor/125-event-reducer` when creating branches manually.
 - Use Conventional Commit-style PR titles, such as `feat(game): persist phase changes`.
 - Run `flutter analyze` and `flutter test` before requesting review.
 - Add tests for domain rules, reducers, migrations, recovery, and external-data normalization.

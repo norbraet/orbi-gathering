@@ -56,6 +56,10 @@ run = "flutter emulators"
 description = "Create a PR from the latest commit, template, and branch issue number"
 run = "bash scripts/create-pr.sh"
 
+[tasks."github:bootstrap"]
+description = "Synchronize labels, milestones, and the delivery project on GitHub"
+run = "bash scripts/bootstrap-github.sh"
+
 # =============================================================================
 # Code Quality
 # =============================================================================
@@ -77,7 +81,9 @@ description = "Run unit and widget tests"
 run = "flutter test"
 
 [tasks."test:integration"]
-description = "Run integration tests"
+# Placeholder until the first critical application flow and integration_test/
+# infrastructure are implemented.
+description = "Run integration tests (placeholder; integration_test/ not implemented yet)"
 run = "flutter test integration_test"
 
 [tasks.coverage]

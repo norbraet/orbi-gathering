@@ -1,6 +1,6 @@
 name: Feature request
 description: Propose a user outcome that fits OrbiGathering's product vision.
-title: "[Feature]: "
+title: "feat: "
 labels: ["type: feature", "status: needs-triage"]
 body:
   - type: textarea

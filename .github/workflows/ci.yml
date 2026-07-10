@@ -19,15 +19,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: subosito/flutter-action@v2
-        with:
-          flutter-version: 3.44.6
-          channel: stable
-          cache: true
-      - run: flutter pub get
-      - name: Verify formatting
-        run: dart format --output=none --set-exit-if-changed .
-      - name: Analyze
-        run: flutter analyze --fatal-infos --fatal-warnings
-      - name: Test
-        run: flutter test
+      - uses: jdx/mise-action@v3
+      - name: Resolve Flutter dependencies
+        run: mise run dependencies
+      - name: Run quality checks
+        run: mise run check

@@ -2,8 +2,15 @@
 
 set -euo pipefail
 
-message_file="${1:?Expected the commit-message file path.}"
-first_line="$(head -n 1 "$message_file")"
+if [[ "${1:-}" == '--message' ]]; then
+  first_line="${2:?Expected a message after --message.}"
+else
+  message_file="${1:?Expected the commit-message file path or --message.}"
+  first_line="$(head -n 1 "$message_file")"
+fi
+# Git may provide a CRLF commit-message file on Windows. The Conventional
+# Commits body is unrestricted; normalize only the first line before matching.
+first_line="${first_line%$'\r'}"
 regex='^(feat|fix|docs|refactor|perf|test|chore|build|ci)(\([a-z0-9._/-]+\))?(!)?: .+$'
 
 if [[ "$first_line" =~ $regex ]]; then

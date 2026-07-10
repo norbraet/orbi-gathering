@@ -1,23 +1,30 @@
 # Project management playbook
 
-The canonical delivery model comes from `docs/roadmap.md`. GitHub configuration is stored as code in this directory and synchronized with `scripts/bootstrap-github.ps1`.
+The canonical delivery model comes from `docs/roadmap.md`. GitHub configuration is stored as code in this directory and synchronized with `scripts/bootstrap-github.sh`.
 
 ## One-time setup
 
-From the repository root, authenticate a maintainer account and run:
+From the repository root, authenticate a maintainer account with the project scope and run:
 
-```powershell
+```sh
 gh auth login -h github.com
-./scripts/bootstrap-github.ps1
+gh auth refresh -s project
+bash scripts/bootstrap-github.sh
 ```
 
-Use `-WhatIf` to preview API-backed label and milestone changes. The script is idempotent: it updates matching labels and milestones, reuses a project with the configured title, links it to the repository, and adds missing project fields.
+Use `--dry-run` to preview changes. The script is idempotent: it updates matching labels and milestones, reuses a project with the configured title, links it to the repository, and adds missing project fields. It requires Bash, Git, and the GitHub CLI, so it works on Linux, macOS, and Windows environments such as Git Bash or WSL.
+
+## Milestone ordering
+
+Delivery milestones use `M<track>.<step>` prefixes. The first number groups a coherent delivery track and the second number states the sequence within it. For example, `M1.2` follows `M1.1`, while `M2.0` begins the next track. These identifiers describe delivery order, not application versions; release versions and Git tags are managed separately.
+
+The future backlog is intentionally unnumbered because it is neither ordered nor committed. Assign an item to a numbered milestone only after it has entered the planned delivery sequence.
 
 After bootstrapping, use `.github/project.yml` to create the saved Roadmap, Delivery board, Priorities, and Backlog views and enable the listed built-in project workflows. GitHub currently manages these view/workflow details most reliably in the project UI.
 
 ## Issue readiness
 
-An issue may move to Ready when it has one type, one priority, at least one area, an owner or explicit pickup path, a milestone (or Future backlog), testable acceptance criteria, known dependencies, and no unresolved product-boundary question.
+An issue may move to Ready when it has one type, one priority, at least one area, an owner or explicit pickup path, a numbered milestone (or the unordered future backlog), testable acceptance criteria, known dependencies, and no unresolved product-boundary question.
 
 ## Operating cadence
 

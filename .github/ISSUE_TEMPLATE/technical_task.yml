@@ -1,6 +1,6 @@
 name: Technical task or spike
 description: Define engineering, architecture, research, or maintenance work.
-title: "[Tech]: "
+title: "chore: "
 labels: ["type: technical", "status: needs-triage"]
 body:
   - type: dropdown

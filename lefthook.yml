@@ -16,6 +16,11 @@ pre-commit:
       fail_text: '❌ Flutter analysis found issues. Fix them and commit again.'
       skip_empty: true
 
+commit-msg:
+  commands:
+    conventional:
+      run: bash scripts/validate-commit-message.sh "{1}"
+
 pre-push:
   commands:
     forbidden-branches:

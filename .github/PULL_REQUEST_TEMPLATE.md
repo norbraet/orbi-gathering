@@ -4,9 +4,8 @@
 
 ## Related work
 
-<!-- Use "Closes #123" when this PR fully resolves an issue. -->
-
-Closes #
+<!-- `mise run pr:create` adds a closing reference when the branch name includes an issue number. -->
+<!-- Add any other related issues, pull requests, or follow-up work here. -->
 
 ## Change type
 

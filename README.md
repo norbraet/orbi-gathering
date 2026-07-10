@@ -23,7 +23,15 @@ mise run analyze      # Run static analysis
 mise run test         # Run unit and widget tests
 mise run check        # Verify formatting, analysis, and tests
 mise run doctor       # Inspect the local Flutter toolchain
+mise run pr:create    # Create a PR using the latest Conventional Commit message
 ```
+
+Commits follow the Conventional Commits format, for example
+`feat(game): add life tracking`. The commit hook validates this format, and
+`mise run pr:create` uses the latest commit message to prefill the pull request
+title while retaining the repository pull request template as the body. For a
+branch such as `feat/123-game-setup`, it also adds `Closes #123` to link and
+close the issue when the pull request merges.
 
 ## Running the application
 

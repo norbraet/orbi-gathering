@@ -52,6 +52,10 @@ run = "flutter devices"
 description = "List available Flutter emulators"
 run = "flutter emulators"
 
+[tasks."pr:create"]
+description = "Create a PR from the latest commit, template, and branch issue number"
+run = "bash scripts/create-pr.sh"
+
 # =============================================================================
 # Code Quality
 # =============================================================================

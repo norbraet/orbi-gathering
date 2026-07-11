@@ -60,6 +60,10 @@ run = "bash scripts/create-pr.sh"
 description = "Synchronize labels, milestones, and the delivery project on GitHub"
 run = "bash scripts/bootstrap-github.sh"
 
+[tasks."release:promote"]
+description = "Open a pull request promoting develop to main, which triggers release-please"
+run = "bash scripts/promote-release.sh"
+
 # =============================================================================
 # Code Quality
 # =============================================================================

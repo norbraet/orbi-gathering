@@ -43,6 +43,25 @@ title while retaining the repository pull request template as the body. For a
 branch such as `feat/123-game-setup`, it also adds `Closes #123` to link and
 close the issue when the pull request merges.
 
+## Releases
+
+Release Please runs after changes are promoted from `develop` to `main`. Open
+that pull request with:
+
+```sh
+mise run release:promote
+```
+
+It creates or updates a release pull request from Conventional Commit history.
+Merging the release pull request updates `pubspec.yaml` and `CHANGELOG.md`,
+then creates the Git tag and GitHub release. Configure a fine-grained PAT as
+the repository secret `RELEASE_PLEASE_TOKEN`; grant it read and write access to
+**Contents**, **Issues**, and **Pull requests**. This lets CI run automatically
+on the release pull request. The repository starts from the pre-release
+baseline `v0.0.0`: the first `feat:` release is `v0.1.0`, while a `fix:` release
+is `v0.0.1`. See the [release process and versioning policy](docs/release.md)
+for the complete workflow and Conventional Commit mapping.
+
 Issue forms use matching title prefixes: `feat:`, `fix:`, and `chore:`. GitHub
 uses those titles when suggesting a branch from an issue. When creating a
 branch manually, use the project convention `<type>/<issue>-<description>`,

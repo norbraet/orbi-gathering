@@ -12,6 +12,7 @@ OrbiGathering is a local-first mobile companion for physical Magic: The Gatherin
 - [Data model](data-model.md) — application entities, relationships, event envelope, snapshots, and representative schemas.
 - [Scryfall integration](api.md) — card-data access, caching, rate limiting, images, identifiers, bulk data, and the `CardCatalog` boundary.
 - [Roadmap](roadmap.md) — Version 1 scope, phased delivery, release criteria, Version 2 multiplayer, and later ideas.
+- [Release process](release.md) — version sources, Conventional Commit mapping, pre-1.0 policy, and the release workflow.
 
 ## Architecture decision records
 
@@ -22,4 +23,3 @@ OrbiGathering is a local-first mobile companion for physical Magic: The Gatherin
 ## Reading paths
 
 New contributors should start with the [product vision](vision.md), then read [gameplay](gameplay.md), [architecture](architecture.md), and [technology stack](tech-stack.md). Designers can start with the [UI design system](ui-design-system.md). Work involving cards or decks should also consult the [Scryfall integration](api.md) and [data model](data-model.md).
-

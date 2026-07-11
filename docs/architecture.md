@@ -18,7 +18,7 @@ Local persistence (snapshots + events)
 Optional synchronization adapter
 ```
 
-The game workflow uses an explicit domain engine rather than a generic state-machine library. Deck editing and settings use conventional CRUD; event-based reconstruction is reserved for live games, where undo, recovery, replay, and future synchronization make it valuable.
+The game workflow uses an explicit domain engine rather than a generic state-machine library. Deck editing and settings use conventional CRUD; event-based reconstruction is reserved for live games, where undo, recovery, replay, and future synchronization make it valuable. The event log is the durable source of truth for a live game. Tables that expose the latest game, player, reminder, effect, or counter state are projections: they are updated in the same database transaction as their event batch and are never an independent mutation path.
 
 This decision is formalized in [ADR-003](adr/adr-003-event-driven-game-state.md).
 
@@ -105,7 +105,7 @@ The engine supports hierarchical phases, guarded transitions, timers, pause/resu
 
 Every meaningful live-game action becomes an append-only event, including life and counter changes, phase advancement, reminders, effect expiry, pause/resume, and game completion. A command may yield multiple events when consequences are deterministic; ending a turn can expire effects, reset resources, and change the active player in one transaction.
 
-Undo should not destructively edit history. It records or applies a reversal policy so the exact game can be rebuilt and inspected. Redo and development replay follow from the same model. Event schemas are versioned for migrations and future multiplayer compatibility. See [data model](data-model.md) for the event envelope and catalog.
+Undo must not destructively edit history. Version 1 uses an append-only event log plus a persisted active-history cursor. Recovery reduces events only through that cursor; undo moves it backward and redo moves it forward. If a new command follows undo, it starts a new active branch while the former branch remains auditable. Event schemas are versioned for migrations and future multiplayer compatibility. See [data model](data-model.md) for the event envelope and catalog.
 
 ## Persistence and recovery
 
@@ -114,8 +114,8 @@ SQLite through Drift stores decks, cached cards, games, players, effects, remind
 After each meaningful action:
 
 1. Validate the command.
-2. Persist emitted events atomically.
-3. Update or periodically create a snapshot.
+2. Persist emitted events, the active-history cursor, and affected projections atomically.
+3. Update or periodically create a snapshot for the active branch.
 4. Publish the derived state to the UI.
 
 On launch, load the newest compatible snapshot and reduce subsequent events. This must recover from background termination, an operating-system kill, a restart, or a temporary crash. The home screen can then offer, for example:
@@ -139,7 +139,7 @@ Scryfall-specific details are isolated in the [API integration](api.md). Never e
 
 Version 1 requires no backend or authentication. Dio handles Scryfall requests behind the card repository. Search is debounced and throttled; cached deck cards remain available offline. Network failure must not interrupt an active game.
 
-Local persistence owns user data. Scryfall is upstream reference data, not the operational game database:
+Local persistence owns user data. Scryfall is upstream reference data, not the operational game database. “No backend” means no remote server, account, or synchronization service in Version 1; it does not mean the app has no database:
 
 ```text
 Scryfall
@@ -170,4 +170,3 @@ Direct Bluetooth peer-to-peer and Web Bluetooth are not architectural foundation
 ## Testing architecture
 
 Tests cover domain policies, game-engine transitions, event reducers and upcasting, snapshots, undo/redo, recovery, Drift repositories and migrations, Scryfall adapters, reminder scheduling, effect expiry, and end-to-end game flows. Fakes implement repository interfaces so domain tests never require live network access.
-

@@ -1,6 +1,6 @@
 # Contributing to OrbiGathering
 
-Start with `docs/vision.md`, then read the relevant gameplay, architecture, data-model, and UI guidance. OrbiGathering complements a physical Magic table; it is not a digital battlefield or authoritative rules engine.
+Start with `docs/vision.md`, then read the relevant gameplay, architecture, data-model, and UI guidance. OrbiGathering complements a physical Magic table; it is not a digital battlefield or authoritative rules engine. Participation in this project is governed by our [Code of Conduct](CODE_OF_CONDUCT.md)
 
 ## Before implementation
 

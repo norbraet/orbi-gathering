@@ -39,9 +39,10 @@ mise run pr:create    # Create a PR using the latest Conventional Commit message
 Commits follow the Conventional Commits format, for example
 `feat(game): add life tracking`. The commit hook validates this format, and
 `mise run pr:create` uses the latest commit message to prefill the pull request
-title while retaining the repository pull request template as the body. For a
-branch such as `feat/123-game-setup`, it also adds `Closes #123` to link and
-close the issue when the pull request merges.
+title while retaining the repository pull request template as the body. It also
+lists the commits unique to the pull request base branch under the Summary
+section. For a branch such as `feat/123-game-setup`, it adds `Closes #123` to
+link and close the issue when the pull request merges.
 
 ## Releases
 

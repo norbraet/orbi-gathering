@@ -1,6 +1,8 @@
 ## Summary
 
 <!-- What changed, and why is this the right change? -->
+<!-- `mise run pr:create` inserts commits unique to the pull request base branch below. -->
+<!-- COMMIT_LIST -->
 
 ## Related work
 

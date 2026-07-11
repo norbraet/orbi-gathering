@@ -11,9 +11,11 @@ usage() {
   cat <<'EOF'
 Usage: scripts/bootstrap-github.sh [--dry-run]
 
-Synchronize the repository labels, milestones, and GitHub Project from the
-canonical configuration under .github/. Existing items are updated and missing
-items are created. Project views and built-in workflows remain a manual step.
+Synchronize the repository labels, milestones, GitHub Project, Discussions
+setting, default workflow permissions, the develop branch and its promotion
+to default branch, and the main/develop ruleset from the canonical
+configuration under .github/. Existing items are updated and missing items
+are created. Project views and built-in workflows remain a manual step.
 EOF
 }
 
@@ -67,7 +69,104 @@ fi
 repository="$(gh repo view --json nameWithOwner --jq .nameWithOwner)"
 owner="${repository%%/*}"
 
+# Two-branch convention for this template: feature branches merge into
+# develop (the default branch); a deliberate develop -> main pull request
+# (see `mise run release:promote`) is the only path that updates main, which
+# is what triggers release-please. GitHub has no rule type that restricts
+# which branch a pull request may come from, so this ordering is a
+# documented convention (see CONTRIBUTING.md), not a technical guarantee.
+release_branch='main'
+integration_branch='develop'
+
 printf 'Synchronizing GitHub configuration for %s.\n' "$repository"
+
+run gh api --method PATCH "repos/$repository" -F has_discussions=true
+
+# Keep repository Actions defaults permissive for repository automation. The
+# release-please workflow itself uses the RELEASE_PLEASE_TOKEN fine-grained
+# PAT, whose repository permissions are configured separately as a secret.
+run gh api --method PUT "repos/$repository/actions/permissions/workflow" \
+  -f default_workflow_permissions=write \
+  -F can_approve_pull_request_reviews=true
+
+if gh api "repos/$repository/branches/$integration_branch" >/dev/null 2>&1; then
+  printf 'Branch already exists: %s\n' "$integration_branch"
+else
+  release_branch_sha="$(
+    gh api "repos/$repository/git/ref/heads/$release_branch" --jq .object.sha
+  )"
+  run gh api --method POST "repos/$repository/git/refs" \
+    -f ref="refs/heads/$integration_branch" \
+    -f sha="$release_branch_sha"
+fi
+
+current_default_branch="$(gh repo view --json defaultBranchRef --jq .defaultBranchRef.name)"
+if [[ "$current_default_branch" == "$integration_branch" ]]; then
+  printf 'Default branch already set to: %s\n' "$integration_branch"
+else
+  run gh api --method PATCH "repos/$repository" -f default_branch="$integration_branch"
+fi
+
+ruleset_name='Protect main and develop'
+existing_ruleset_id="$(
+  gh api --paginate "repos/$repository/rulesets" \
+    --jq ".[] | select(.name == \"$ruleset_name\") | .id" |
+    head -n 1
+)"
+
+# Single-developer baseline: require the CI and PR-title checks to pass and
+# require a pull request, but allow zero approving reviews so the owner can
+# still self-merge. Block force-pushes and deletion of both branches.
+ruleset_payload="$(
+  cat <<JSON
+{
+  "name": "$ruleset_name",
+  "target": "branch",
+  "enforcement": "active",
+  "conditions": {
+    "ref_name": {
+      "include": ["refs/heads/$release_branch", "refs/heads/$integration_branch"],
+      "exclude": []
+    }
+  },
+  "rules": [
+    { "type": "deletion" },
+    { "type": "non_fast_forward" },
+    {
+      "type": "pull_request",
+      "parameters": {
+        "required_approving_review_count": 0,
+        "dismiss_stale_reviews_on_push": true,
+        "require_code_owner_review": false,
+        "require_last_push_approval": false,
+        "required_review_thread_resolution": true
+      }
+    },
+    {
+      "type": "required_status_checks",
+      "parameters": {
+        "strict_required_status_checks_policy": true,
+        "required_status_checks": [
+          { "context": "Format, analyze, and test" },
+          { "context": "conventional-title" }
+        ]
+      }
+    }
+  ]
+}
+JSON
+)"
+
+if [[ "$is_dry_run" == true ]]; then
+  printf '[dry-run] sync ruleset %q for %q (existing id: %s)\n' \
+    "$ruleset_name" "$repository" "${existing_ruleset_id:-none}"
+elif [[ -n "$existing_ruleset_id" ]]; then
+  gh api --method PUT "repos/$repository/rulesets/$existing_ruleset_id" --input - <<<"$ruleset_payload" >/dev/null
+  printf 'Repository ruleset updated: %s\n' "$ruleset_name"
+else
+  gh api --method POST "repos/$repository/rulesets" --input - <<<"$ruleset_payload" >/dev/null
+  printf 'Repository ruleset created: %s\n' "$ruleset_name"
+fi
 
 while IFS='|' read -r name color description; do
   [[ -z "$name" ]] && continue
@@ -196,5 +295,7 @@ done < <(
     sed 's/, /,/g'
 )
 
-printf 'GitHub labels, milestones, project metadata, link, and fields are synchronized.\n'
-printf 'Configure project views and built-in workflows in the GitHub UI as documented.\n'
+printf 'GitHub labels, milestones, project metadata, link, fields, Discussions,\n'
+printf 'default workflow permissions, the develop branch, and the main/develop\n'
+printf 'ruleset are synchronized. Configure project views and built-in workflows\n'
+printf 'in the GitHub UI as documented.\n'

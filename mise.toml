@@ -36,6 +36,10 @@ run = "flutter pub get"
 description = "Check for outdated Dart and Flutter dependencies"
 run = "flutter pub outdated"
 
+[tasks.codegen]
+description = "Generate Drift and other Dart source files"
+run = "dart run build_runner build --delete-conflicting-outputs"
+
 # =============================================================================
 # Development
 # =============================================================================

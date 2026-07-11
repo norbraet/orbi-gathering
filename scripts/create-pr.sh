@@ -2,6 +2,10 @@
 
 set -euo pipefail
 
+script_directory="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=conventional-commit.sh
+source "$script_directory/conventional-commit.sh"
+
 template='.github/PULL_REQUEST_TEMPLATE.md'
 branch="$(git branch --show-current)"
 commit_subject="$(git log -1 --pretty=%s)"
@@ -12,12 +16,9 @@ cleanup() {
 }
 trap cleanup EXIT
 
-conventional_regex='^(feat|fix|docs|refactor|perf|test|chore|build|ci)(\([A-Za-z0-9._/-]+\))?(!)?: .+$'
-branch_subject_regex='^(feat|fix|docs|refactor|perf|test|chore|build|ci)[/_-][0-9]+[-_ ]+(.*)$'
-
-if [[ "$commit_subject" =~ $conventional_regex ]]; then
+if conventional_commit_header_is_valid "$commit_subject"; then
   pull_request_title="$commit_subject"
-elif [[ "$commit_subject" =~ $branch_subject_regex ]] && [[ -n "${BASH_REMATCH[2]}" ]]; then
+elif [[ "$commit_subject" =~ $conventional_commit_branch_subject_regex ]] && [[ -n "${BASH_REMATCH[2]}" ]]; then
   pull_request_title="${BASH_REMATCH[1]}: ${BASH_REMATCH[2]}"
 else
   printf 'The latest commit does not have a Conventional Commit title: %s\n' \

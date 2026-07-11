@@ -5,6 +5,7 @@
 ## Related work
 
 <!-- `mise run pr:create` adds a closing reference when the branch name includes an issue number. -->
+<!-- LINKED_ISSUE -->
 <!-- Add any other related issues, pull requests, or follow-up work here. -->
 
 ## Change type
@@ -17,10 +18,15 @@
 
 ## Validation
 
-<!-- List commands run and any manual device/platform checks. -->
+<!-- List the commands run and their outcomes. Note anything that was not tested and why. -->
+
+### Automated
 
 - [ ] `flutter analyze`
 - [ ] `flutter test`
+
+### Manual
+
 - [ ] Android checked, when affected
 - [ ] iOS checked, when affected
 - [ ] Offline/recovery behavior checked, when affected

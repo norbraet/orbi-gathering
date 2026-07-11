@@ -48,7 +48,7 @@ Unmatched or ambiguous entries are shown for manual resolution. Store stable ide
 
 ## Cache strategy
 
-The local cache stores normalized metadata for saved-deck cards, recent searches, viewed details, preferred printings, and viewed rulings. Records include fetch/update timestamps and enough structured fields to render offline. Image caching is separate from metadata caching.
+The local cache stores normalized metadata for saved-deck cards, recent searches, viewed details, preferred printings, and viewed rulings. Records include fetch/update timestamps and enough structured fields to render offline. Image caching is separate from metadata caching: artwork is a bounded on-device file cache, never raw SQLite blobs. Cache keys use the Scryfall printing ID and image size; the cache respects low-data and image-disabled settings and can evict old files under an explicit storage budget.
 
 Cache policy should:
 
@@ -88,7 +88,7 @@ App explanations must never look authoritative.
 
 ## Images
 
-Use Scryfall-provided image URLs and image endpoints according to the current usage policy. Preserve original proportions and copyright/artist information; do not distort images or crop required attribution. Use thumbnails in lists and larger images only on detail screens. Cache recently used images locally and provide low-data and image-disabled settings.
+Use Scryfall-provided image URLs and image endpoints according to the current usage policy. Preserve original proportions and copyright/artist information; do not distort images or crop required attribution. Use thumbnails in lists and larger images only on detail screens. Cache recently used images locally as bounded files and provide low-data and image-disabled settings. The implementation should use the printing ID plus requested size as its cache key, revalidate URLs through card metadata, and allow old files to be evicted without affecting a deck or card record.
 
 Do not package every image or printing in the application binary. Card artwork text is not an accessible substitute for structured card name and Oracle text.
 
@@ -111,4 +111,3 @@ Bulk refresh is not required for the initial direct-API release, but the `CardCa
 Network errors never interrupt active game tracking. The adapter exposes meaningful offline, throttled, not-found, validation, and transient-failure results. Tests use fixtures for multi-faced cards, printings, legality changes, deck collection batches, rulings, missing fields, throttling, cancellation, cache hits, and upstream identifier migration.
 
 Before every public release, review current API limits, required headers, bulk-data guidance, image rules, attribution requirements, and terms instead of relying indefinitely on initial research.
-

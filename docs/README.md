@@ -19,6 +19,7 @@ OrbiGathering is a local-first mobile companion for physical Magic: The Gatherin
 - [ADR-001: Use Flutter](adr/adr-001-use-flutter.md)
 - [ADR-002: Use Scryfall](adr/adr-002-use-scryfall.md)
 - [ADR-003: Use event-driven local-first game state](adr/adr-003-event-driven-game-state.md)
+- [ADR-004: Use projections, cursor-based undo, and file-backed card-image caching](adr/adr-004-live-state-and-card-cache.md)
 
 ## Reading paths
 

@@ -88,9 +88,10 @@ Game
 - endedAt
 - updatedAt
 - schemaVersion
+- activeHistoryCursor
 ```
 
-Live fields form the latest materialized state and must agree with the newest snapshot plus events. Status is setup, active, paused, or completed.
+Live fields form the latest materialized state and must agree with the newest snapshot plus events through `activeHistoryCursor`. Status is setup, active, paused, or completed. They are projections, not an alternative source of truth.
 
 ## GameSnapshot
 
@@ -103,9 +104,10 @@ GameSnapshot
 - statePayload
 - stateSchemaVersion
 - createdAt
+- branchId
 ```
 
-A snapshot serializes complete derived state at a known event boundary. On recovery, the engine loads the latest compatible snapshot and reduces later events. Snapshot frequency is an implementation policy.
+A snapshot serializes complete derived state at a known event boundary and active-history branch. On recovery, the engine loads the latest compatible snapshot and reduces later active events through the cursor. Snapshot frequency is an implementation policy.
 
 ## GameEvent
 
@@ -122,6 +124,7 @@ type GameEvent = {
   type: GameEventType;
   payload: unknown;
   schemaVersion: number;
+  parentEventId?: string;
 };
 ```
 
@@ -153,7 +156,7 @@ Player B gained 2 life
 Player A’s life was set to 10
 ```
 
-Undo metadata or compensating events must retain auditability rather than deleting prior events. The exact strategy should be fixed before synchronization work.
+Events form an append-only history. Version 1 persists an active-history cursor and branch relationship: undo and redo move the cursor without deleting events, while an action after undo starts a new active branch. Projections and snapshots describe only the active branch through its cursor. This preserves auditability and gives a deterministic recovery model; synchronization can later add server ordering without replacing it.
 
 ## Reminder
 
@@ -233,4 +236,3 @@ Normalized card records include Scryfall printing ID, Oracle ID, set, collector 
 - Migrations cover Drift schema versions, event payload versions, and snapshot-state versions.
 - Timestamps are stored in UTC and formatted in the UI.
 - External card migrations may update references while retaining user selections and notes.
-

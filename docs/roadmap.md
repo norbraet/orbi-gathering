@@ -18,7 +18,7 @@ Version 1 is account-free, offline-first, and single-device.
 
 - Bootstrap Flutter for iOS and Android with strict Dart analysis and GoRouter.
 - Establish design tokens, error handling, logging, repositories, and CI.
-- Add Drift schema/migrations and prove persistence across restarts.
+- Add Drift schema/migrations and prove persistence across restarts, including the event log, projections, snapshots, and active-history cursor.
 - Build the Dio/Scryfall adapter with throttling, caching, cancellation, and test fixtures.
 
 Exit criteria: both platforms launch; database state survives restarts; card search respects current API policy; automated tests run in CI.
@@ -104,17 +104,17 @@ Camera/card recognition, automatic battlefield scanning, full hand tracking, exe
 
 ## First technical spikes
 
-### Spike 1: event-driven game loop
+### Spike 1: recoverable game loop
 
-1. Create a two-player game and show both life totals.
+1. Create a local two-player game with no deck or Scryfall dependency and show both life totals.
 2. Advance phases.
 3. Add an “until end of turn” effect.
 4. End the turn and expire it automatically.
 5. Persist every action as an event.
 6. Close and reopen the app, restoring exact state.
-7. Undo the end-turn action.
+7. Undo and redo the end-turn action, then make a new life change to prove the persisted history branch is deterministic.
 
-This validates the engine, event representation, Drift persistence, undo, recovery, and contextual UI.
+This validates the engine, event representation, Drift persistence, projections, cursor-based undo/redo, recovery, and contextual UI. It is the first implementation slice; deck building, card search, and richer formats follow only after it is complete.
 
 ### Spike 2: card-to-companion flow
 

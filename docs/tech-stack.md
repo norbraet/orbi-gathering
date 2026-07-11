@@ -28,6 +28,10 @@ SQLite offers durable, transactional local storage on both target platforms. Dri
 
 Durability is a product requirement: active state is persisted after every meaningful action and can be restored after termination or restart.
 
+## Card images: on-device file cache
+
+Card metadata belongs in Drift, while card artwork is cached as files on the device. The image-cache implementation is kept behind the card presentation/data boundary. It keys files by the Scryfall printing identifier and requested image size, uses bounded disk storage with eviction, and honors low-data and image-disabled settings. Artwork bytes are not stored as SQLite blobs or bundled wholesale into the app.
+
 ## Networking: Dio
 
 Dio supplies cancellation, interceptors, timeouts, headers, error handling, and request coordination needed by the Scryfall adapter. Search requests must be debounced, superseded calls cancelled, and endpoint limits enforced centrally. Details live in [Scryfall integration](api.md).
@@ -72,7 +76,7 @@ Networking:       Dio
 Secure storage:   Flutter Secure Storage
 Animations:       Flutter animations, selected Rive, CustomPainter
 Card source:      Scryfall API
+Card images:      On-device bounded file cache
 Architecture:     Local-first, feature-driven, event-oriented
 Backend/auth:     None required for Version 1
 ```
-

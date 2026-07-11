@@ -10,6 +10,7 @@ repository_root="$(git rev-parse --show-toplevel)"
 template="$repository_root/.github/PULL_REQUEST_TEMPLATE.md"
 linked_issue_marker='<!-- LINKED_ISSUE -->'
 commit_list_marker='<!-- COMMIT_LIST -->'
+default_base_branch='develop'
 
 branch="$(git branch --show-current)"
 body_file="$(mktemp)"
@@ -84,8 +85,7 @@ while ((argument_index <= $#)); do
 done
 
 if [[ -z "$base_branch" ]]; then
-  base_branch="$(git symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null || true)"
-  base_branch="${base_branch#origin/}"
+  base_branch="$default_base_branch"
 fi
 
 if [[ -z "$base_branch" ]]; then

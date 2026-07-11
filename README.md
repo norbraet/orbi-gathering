@@ -42,7 +42,9 @@ Commits follow the Conventional Commits format, for example
 title while retaining the repository pull request template as the body. It also
 lists the commits unique to the pull request base branch under the Summary
 section. For a branch such as `feat/123-game-setup`, it adds `Closes #123` to
-link and close the issue when the pull request merges.
+link and close the issue when the pull request merges. Feature pull requests
+default to `develop` as their comparison branch; pass `--base <branch>` when a
+different target is intended.
 
 ## Releases
 

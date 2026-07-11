@@ -157,6 +157,34 @@ Do not update expectations merely because a test fails. First establish whether 
 - Use Conventional Commit-style PR titles: `type(optional-scope): concise description`.
 - A change is complete when formatting, analysis, and relevant tests pass; architectural boundaries remain intact; offline/recovery and accessibility implications are handled; migrations are safe; and documentation is current.
 
+## GitHub issues and implementation branches
+
+Create or update a GitHub issue before beginning a non-trivial implementation unless the user explicitly asks to work without one. Search for an existing issue first and avoid duplicates. Issue titles use the repository's Conventional Commit vocabulary, for example `feat(game): add turn progression` or `chore(docs): clarify recovery policy`.
+
+Every issue created by an agent must contain these sections:
+
+- **Description** — the user or product problem, intended outcome, and relevant context.
+- **Suggested solution** — a proposed implementation direction and important constraints; distinguish it from fixed requirements when alternatives remain open.
+- **Scope / affected files** — the expected features, layers, packages, documents, or file paths. Mark genuinely unknown paths as discovery work rather than inventing precision.
+- **Acceptance criteria** — observable checkbox criteria, including appropriate tests, offline/recovery, accessibility, migration, or documentation requirements.
+
+When creating or maintaining an issue:
+
+- Apply all matching labels from `.github/labels.yml`, including status, type, priority, and affected area. Do not add unrelated labels.
+- Assign the most specific available milestone from `.github/milestones.yml`; milestones express delivery order, not release version. Leave the milestone empty only when no current milestone fits.
+- Add the issue to the relevant GitHub Project. The repository's delivery project is normally appropriate; if the relevant project is unclear, leave the issue unassigned rather than guessing.
+- Maintain native GitHub issue dependency relationships. Use **blocked by** for prerequisites and **blocking** for work that cannot start until the current issue is complete. Keep relationships accurate when scope changes so the dependency graph communicates a real implementation order.
+- Prefer creating sub-issues for larger features or epics instead of putting all work into a single issue. Use a parent issue to capture the overall goal, roadmap, and completion status, and create sub-issues for independently implementable workstreams. Link them using GitHub's native parent/sub-issue relationships, and keep dependencies between sub-issues accurate.
+
+Before implementation, inspect the issue's acceptance criteria, dependencies, and current worktree. Work on a dedicated branch:
+
+- For an issue, use `<type>/<issue-number>-<short-kebab-description>`, for example `feat/12-recoverable-game-loop`.
+- Without an issue, use `<type>/<short-kebab-description>`, for example `chore/update-agent-guidance`.
+- Branch from the repository's active integration branch, normally `develop`, unless the issue or user specifies another base. Confirm the current branch and worktree state first; do not switch branches over unrelated uncommitted changes without user direction.
+- Create and switch with `git switch -c <branch-name> <base-branch>` when the branch does not exist, or switch to the existing branch with `git switch <branch-name>`.
+- Implement only the issue scope, preserve unrelated worktree changes, and run the relevant checks before handoff.
+- Never stage, commit, push, open a pull request, or otherwise publish changes unless the user explicitly asks for that action.
+
 When multiple architectural solutions exist:
 
 - preserve existing patterns
